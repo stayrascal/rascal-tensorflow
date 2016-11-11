@@ -13,9 +13,9 @@ class Network(object):
         node_count = 0
         for index in range(layer_count):
             self.layers.append(Layer(index, layers[index]))
-        for layer in range(layer_count -1):
+        for layer in range(layer_count - 1):
             connections = [Connection(upstream_node, downstream_node)
-                           for upstream_node in  self.layers[layer].nodes
+                           for upstream_node in self.layers[layer].nodes
                            for downstream_node in self.layers[layer + 1].nodes[:-1]]
 
             for conn in connections:
@@ -68,6 +68,7 @@ class Network(object):
         for layer in self.layers:
             print(layer)
 
+
 def gradient_check(network, sample_feature, sample_label):
     network_error = lambda vec1, vec2: \
         0.5 * reduce(lambda a, b: a + b,
@@ -80,4 +81,12 @@ def gradient_check(network, sample_feature, sample_label):
         actual_gradient = conn.get_gradient()
 
         epsilon = 0.0001
-        conn.we
+        conn.weight += epsilon
+        error1 = network_error(network.predict(sample_feature), sample_label)
+
+        conn.weight -= 2 * epsilon
+        error2 = network_error(network.predict(sample_feature), sample_feature)
+
+        expected_gradient = (error2 - error1) / (2 * epsilon)
+
+        print('expected gradient: \t%f\nactual gradient: \t%f' % (expected_gradient, actual_gradient))
