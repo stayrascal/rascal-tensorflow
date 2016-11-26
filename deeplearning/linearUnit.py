@@ -2,6 +2,7 @@ from deeplearning.perceptron import Perceptron
 
 f = lambda x: x
 
+
 class LinearUnit(Perceptron):
     def __init__(self, input_num):
         Perceptron.__init__(self, input_num, f)
@@ -15,14 +16,16 @@ def get_train_dataset():
     labels = [5500, 2300, 7600, 1800, 11400]
     return input_vecs, labels
 
+
 def train_linear_unit():
     """
     Training Linear Unit with training data
     """
     lu = LinearUnit(1)
     input_vecs, labels = get_train_dataset()
-    lu.train(input_vecs, labels, 10, 0.1)
+    lu.train(input_vecs, labels, 10, 0.01)
     return lu
+
 
 if __name__ == '__main__':
     linear_unit = train_linear_unit()

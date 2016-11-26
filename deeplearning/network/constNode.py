@@ -7,6 +7,7 @@ class ConstNode(object):
         self.node_index = node_index
         self.downstream = []
         self.output = 1
+        self.delta = 0.0
 
     def append_downstream_connection(self, conn):
         """

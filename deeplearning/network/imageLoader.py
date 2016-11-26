@@ -47,14 +47,14 @@ class LabelLoader(Loader):
 
 
 def get_training_data_set():
-    image_loader = ImageLoader('train-images-idx3-ubyte', 60000)
-    label_loader = LabelLoader('train-labels-idx1-ubyte', 60000)
+    image_loader = ImageLoader('train-images-idx3-ubyte.gz', 60000)
+    label_loader = LabelLoader('train-labels-idx1-ubyte.gz', 60000)
     return image_loader.load(), label_loader.load()
 
 
 def get_test_data_set():
-    image_loader = ImageLoader('t10k-images-idx3-ubyte', 60000)
-    label_loader = LabelLoader('t10k-labels-idx1-ubyte', 60000)
+    image_loader = ImageLoader('t10k-images-idx3-ubyte.gz', 60000)
+    label_loader = LabelLoader('t10k-labels-idx1-ubyte.gz', 60000)
     return image_loader.load(), label_loader.load()
 
 
@@ -95,3 +95,7 @@ def train_and_evaluate():
             break
         else:
             last_error_ratio = error_ratio
+
+
+if __name__ == '__main__':
+    train_and_evaluate()

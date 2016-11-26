@@ -1,5 +1,3 @@
-from functools import reduce
-
 class Perceptron(object):
     def __init__(self, input_num, activator):
         """
@@ -23,11 +21,7 @@ class Perceptron(object):
         Use map function to calculate [x1*w1, x2*w2, x3*w3]
         Use reduce to get sum of the array
         """
-        # return self.activator(
-        #    sum(map(lambda sample: sample[0] * sample[1], list(zip(input_vec, self.weights))), self.bias))
-        return self.activator(
-            reduce(lambda a, b: a + b,
-                   map(lambda (x, w): x * w, zip(input_vec, self.weights)), self.bias))
+        return self.activator(sum(map(lambda element: element[0] * element[1], list(zip(input_vec, self.weights))), self.bias))
 
     def train(self, input_vecs, labels, iteration, rate):
         """
@@ -53,7 +47,7 @@ class Perceptron(object):
         Update weight by the rule of perceptron
         """
         delta = label - output
-        self.weights = map(lambda (x, w): w + rate * delta * x, zip(input_vec, self.weights))
+        self.weights = list(map(lambda element: element[1] + rate * delta * element[0], list(zip(input_vec, self.weights))))
         self.bias += rate * delta
 
 
@@ -88,12 +82,7 @@ if __name__ == '__main__':
     and_perceptron = train_and_perceptron()
     print(and_perceptron)
 
-    print '1 and 1 = %d' % and_perceptron.predict([1, 1])
-    print '0 and 0 = %d' % and_perceptron.predict([0, 0])
-    print '1 and 0 = %d' % and_perceptron.predict([1, 0])
-    print '0 and 1 = %d' % and_perceptron.predict([0, 1])
-
-    # print('1 and 1 = %d' % and_perceptron.predict([1, 1]))
-    # print('0 and 0 = %d' % and_perceptron.predict([0, 0]))
-    # print('1 and 0 = %d' % and_perceptron.predict([1, 0]))
-    # print('0 and 1 = %d' % and_perceptron.predict([0, 1]))
+    print('1 and 1 = %d' % and_perceptron.predict([1, 1]))
+    print('0 and 0 = %d' % and_perceptron.predict([0, 0]))
+    print('1 and 0 = %d' % and_perceptron.predict([1, 0]))
+    print('0 and 1 = %d' % and_perceptron.predict([0, 1]))

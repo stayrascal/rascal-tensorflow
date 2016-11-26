@@ -1,4 +1,9 @@
 from functools import reduce
+import math
+
+
+def sigmoid(x):
+    return 1 / (1 + math.exp(-x))
 
 
 class Node(object):
@@ -42,15 +47,14 @@ class Node(object):
         """
         Calculate the delta of node in hidden layer
         """
-        downstream_delta = reduce(lambda ret, conn: ret + conn.downstream_node.delta * conn.weight, self.downstream,
-                                  0.0)
+        downstream_delta = reduce(lambda ret, conn: ret + conn.downstream_node.delta * conn.weight, self.downstream, 0.0)
         self.delta = self.output * (1 - self.output) * downstream_delta
 
     def calc_output_layer_delta(self, label):
         """
         Calculate the delta of noe in output layer
         """
-        self.data = self.output * (1 - self.output) * (label - self.output)
+        self.delta = self.output * (1 - self.output) * (label - self.output)
 
     def __str__(self):
         node_str = '%u-%u: output: %f delta: %f' % (self.layer_index, self.node_index, self.output, self.delta)

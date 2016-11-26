@@ -10,7 +10,6 @@ class Network(object):
         self.connections = Connections()
         self.layers = []
         layer_count = len(layers)
-        node_count = 0
         for index in range(layer_count):
             self.layers.append(Layer(index, layers[index]))
         for layer in range(layer_count - 1):
@@ -37,7 +36,7 @@ class Network(object):
         self.layers[0].set_output(sample)
         for i in range(1, len(self.layers)):
             self.layers[i].calc_output()
-        return map(lambda node: node.output, self.layers[:-1].nodes[:-1])
+        return list(map(lambda node: node.output, self.layers[:-1].nodes[:-1]))
 
     def calc_delta(self, label):
         output_nodes = self.layers[-1].nodes
@@ -73,9 +72,9 @@ def gradient_check(network, sample_feature, sample_label):
     network_error = lambda vec1, vec2: \
         0.5 * reduce(lambda a, b: a + b,
                      map(lambda v: (v[0] - v[1]) * (v[0] - v[1]),
-                         zip(vec1, vec2)))
+                         list(zip(vec1, vec2))))
 
-    network.get_gradient(sample_feature, sample_feature)
+    network.get_gradient(sample_feature, sample_label)
 
     for conn in network.connections.connections:
         actual_gradient = conn.get_gradient()
