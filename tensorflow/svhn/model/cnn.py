@@ -46,6 +46,8 @@ class Network(object):
         self.save_path = save_path
 
     def init_weights_conv(self, shape, name):
+        # 变量作用域机制
+        # 方法 tf.get_variable() 用来获取或创建一个变量，而不是直接调用tf.Variable.它采用的不是像`tf.Variable这样直接获取值来初始化的方法.
         return tf.get_variable(shape=shape, name=name, initializer=tf.contrib.layers.xavier_initializer_conv2d())
 
     def init_weights_fc(self, shape, name):

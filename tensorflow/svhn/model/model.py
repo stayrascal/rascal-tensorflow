@@ -114,8 +114,8 @@ net.define_model()
 # Standard Deviation: 3.71656010905          Standard Deviation: 3.89332582983
 
 # net.run(train_samples, train_labels, test_samples, test_labels, train_data_iterator=train_data_iterator, iteration_steps=15001, test_data_iterator=test_data_iterator)
-net.train(train_samples, train_labels, data_iterator=train_data_iterator, iteration_steps=14001)
-# net.test(test_samples, test_labels, data_iterator=test_data_iterator)
+# net.train(train_samples, train_labels, data_iterator=train_data_iterator, iteration_steps=14001)
+net.test(test_samples, test_labels, data_iterator=test_data_iterator)
 # net.test(validation_samples, validation_labels, data_iterator=test_data_iterator)
 # net.save_graph()
 # net.read_graph(test_samples[0])
