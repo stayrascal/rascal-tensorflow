@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
- 
+
 import tensorflow as tf
 import numpy as np
 import os
 import cv2
- 
+
 # 如果使用mnist数据集，把MNIST设置为True
 MNIST = False
- 
+
 if MNIST == True:
 	from tensorflow.examples.tutorials.mnist import input_data
 	data = input_data.read_data_sets('/tmp/')
 	image_height = 28
 	image_width = 28
 	image_channel = 1
- 
+
 	batch_size = 128
 	n_batches = data.train.num_examples // batch_size
 else:
