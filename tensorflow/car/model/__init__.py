@@ -2,7 +2,7 @@ import os
 uname = os.uname()
 
 if uname[1] != 'raspberrypi':
-    from . import(utils, model, datasets, remotes, sensors, actuators,
+    from . import(utils, models, datasets, remotes, sensors, actuators,
                 vehicles, pilots, templates)
 
 else: 

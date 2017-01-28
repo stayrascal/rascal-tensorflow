@@ -50,7 +50,7 @@ class Session():
         data = {'throttle':throttle, 'angle':angle, 'milliseconds': milliseconds}
 
         return img_arr, data
-    
+
     def img_paths(self):
         '''
         Return a list of file paths for the images in the session.
@@ -96,7 +96,7 @@ class Session():
         '''
         if img_paths == None:
             img_paths = self.img_paths()
-        
+
         while True:
             for file in img_paths:
                 img_arr, data = self.get(file)
@@ -134,58 +134,58 @@ class Session():
                             y = y.reshape(1, 2)
                             yield x, y
         
-    class SessionHandler():
+class SessionHandler():
+    '''
+    convienience class to create and load sessions.
+    '''
+
+    def __init__(self, session_path):
+        self.session_path = os.path.expanduser(session_path)
+
+    def new(self, name=None):
         '''
-        convienience class to create and load sessions.
+        Create a new session
         '''
 
-        def __init__(self, session_path):
-            self.session_path = os.path.expanduser(session_path)
+        path = self.make_session_dir(self.session_path, session_name=name)
+        session = Session(path)
+        return session
 
-        def new(self, name=None):
-            '''
-            Create a new session
-            '''
+    def load(self, name):
+        '''
+        Load a session given it's name.
+        '''
+        path = os.path.join(self.session_path, name)
+        session = Session(path)
+        return session
 
-            path = self.make_session_dir(self.session_path, session_name=name)
-            session = Session(path)
-            return session
+    def last(self):
+        '''
+        Return the last created session.
+        '''
+        dirs = [ name for name in os.listdir(self.session_path) if os.path.isdir(os.path.join(self.session_path, name))]
+        dirs.sort()
+        path = os.path.join(self.session_path, dirs[-1])
+        session = Session(path)
+        return session
 
-        def load(self, name):
-            '''
-            Load a session given it's name.
-            '''
-            path = os.path.join(self.session_path, name)
-            session = Session(path)
-            return session
+    def make_session_dir(self, base_path, session_name=None):
+        '''
+        Make a new dir with a given name. If name doesn't exist sue the current date/time.
+        '''
 
-        def last(self):
-            '''
-            Return the last created session.
-            '''
-            dirs = [ name for name in os.listdir(self.session_path) if os.path.isdir(os.path.join(self.session_path, name))]
-            dirs.sort()
-            path = os.path.join(self.session_path, dirs[-1])
-            session = Session(path)
-            return session
+        base_path = os.path.expanduser(base_path)
+        if session_name is None:
+            session_dir_name = time.strftime('%Y_%m_%d__%I_%M_%S_%p')
+        else:
+            session_dir_name = session_name
 
-        def make_session_dir(self, base_path, session_name=None):
-            '''
-            Make a new dir with a given name. If name doesn't exist sue the current date/time.
-            '''
+        print('Creating a new session directory: %s' % session_dir_name)
 
-            base_path = os.path.expanduser(base_path)
-            if session_name is None:
-                session_dir_name = time.strftime('%Y_%m_%d__%I_%M_%S_%p')
-            else:
-                session_dir_name = session_name
-
-            print('Creating a new session directory: %s' % session_dir_name)
-
-            session_full_path = os.path.join(base_path, session_dir_name)
-            if not os.path.exists(session_full_path):
-                os.makedirs(session_full_path)
-            return session_full_path
+        session_full_path = os.path.join(base_path, session_dir_name)
+        if not os.path.exists(session_full_path):
+            os.makedirs(session_full_path)
+        return session_full_path
 
 def pickle_sessions(session_folder, session_names, file_path):
     '''
