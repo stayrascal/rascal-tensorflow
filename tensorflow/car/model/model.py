@@ -5,6 +5,7 @@ from keras.layers import Convolution2D, MaxPooling2D, SimpleRNN, Reshape, BatchN
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras.regularizers import l2
 
+
 def cnn3_full1():
     img_input = Input(shape=(120, 160, 3), name="img_input")
 
@@ -28,10 +29,11 @@ def cnn3_full1():
 
     angle_out = Dense(1, name="angle_out")(x)
 
-    model = Model(input = [img_input], output = [angle_out])
+    model = Model(input=[img_input], output=[angle_out])
     model.compile(optimizer='adam', loss='mean_squared_error')
 
     return model
+
 
 def cnn3_full1_rnn1():
     img_input = Input(shape=(120, 160, 3), name="img_input")
@@ -60,10 +62,11 @@ def cnn3_full1_rnn1():
     throttle_out = Dense(1, name="throttle_out")(x)
     angle_out = Dense(1, name="angle_out")(x)
 
-    model = Model(input = [img_input], output = [angle_out])
+    model = Model(input=[img_input], output=[angle_out])
     model.compile(optimizer='adam', loss='mean_squared_error')
 
     return model
+
 
 def cnn1_full1():
     img_input = Input(shape=(120, 160, 3), name="img_input")
@@ -80,10 +83,11 @@ def cnn1_full1():
 
     angle_out = Dense(1, name="angle_out")(x)
 
-    model = Model(input = [img_input], output = [angle_out])
+    model = Model(input=[img_input], output=[angle_out])
     model.compile(optimizer='adam', loss='mean_squared_error')
 
     return model
+
 
 def norm_cnn3_full1():
     img_input = Input(shape=(120, 160, 3), name="img_input")
@@ -109,10 +113,11 @@ def norm_cnn3_full1():
 
     angle_out = Dense(1, name="angle_out")(x)
 
-    model = Model(input = [img_input], output = [angle_out])
+    model = Model(input=[img_input], output=[angle_out])
     model.compile(optimizer='adam', loss='mean_squared_error')
 
     return model
+
 
 def vision_2D(dropout_frac=.2):
     '''
@@ -130,10 +135,12 @@ def vision_2D(dropout_frac=.2):
     aux1 = Flatten(name='aux1_flat')(net)
     aux1 = Dense(64, name='aux1_dense')(aux1)
 
-    net = Convolution2D(128, 6, 6, subsample=(2, 2), border_mode='same', name='conv2')(net)
+    net = Convolution2D(128, 6, 6, subsample=(
+        2, 2), border_mode='same', name='conv2')(net)
     net = dropout_frac(dropout_frac)(net)
 
-    net = Convolution2D(128, 3, 3, subsample=(2, 2), border_mode='same', name='conv3')(net)
+    net = Convolution2D(128, 3, 3, subsample=(
+        2, 2), border_mode='same', name='conv3')(net)
     net = dropout_frac(dropout_frac)(net)
 
     aux2 = Flatten(name='aux2_flat')(net)
@@ -149,9 +156,42 @@ def vision_2D(dropout_frac=.2):
     net = Dense(64, activation='relu', name='net_dense4')(net)
 
     # combine rsidual layers
-    net = merge([net, aux1, aux2], mode='sum') 
+    net = merge([net, aux1, aux2], mode='sum')
     angle_out = Dense(1, name='angle_out')(net)
     model = Model(input=[img_input], output=[angle_out])
     model.compile(optimizer='adam', loss='mean_squared_error')
     return model
 
+
+def regularized_cnn4_full1():
+    reg = l2(0.005)
+
+    img_input = Input(shape=(120, 160, 3), name='img_input')
+
+    x = Convolution2D(4, 3, 3, W_regularizer=reg)(img_input)
+    x = Activation('relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+
+    x = Convolution2D(8, 3, 3, W_regularizer=reg)(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+
+    x = Convolution2D(16, 3, 3, W_regularizer=reg)(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+
+    x = Convolution2D(32, 3, 3, W_regularizer=reg)(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+
+    x = Flatten()(x)
+
+    x = Dense(128, W_regularizer=reg)(x)
+    x = Activation('linear')(x)
+    x = Dropout(.2)(x)
+
+    angle_out = Dense(1, name='angle_out')(x)
+
+    model = Model(input=[img_input], output=[angle_out])
+    model.compile(optimizer='adam', loss='mean_sequared_error')
+    return model
