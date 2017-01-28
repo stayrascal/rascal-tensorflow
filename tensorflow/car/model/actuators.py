@@ -64,7 +64,7 @@ class PWMThrottleActuator(Adafruit_PCA9685_Actuator):
         self.max_pulse = max_pulse
         self.min_pulse = min_pulse
         self.zero_pulse = zero_pulse
-        self.calibrate();
+        self.calibrate()
 
     def calibrate(self):
         # Calibrate ESC

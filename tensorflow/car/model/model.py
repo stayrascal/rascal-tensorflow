@@ -56,7 +56,7 @@ def cnn3_full1_rnn1():
     x = Activation('linear')(x)
     x = Dropout(.2)(x)
 
-    x = Reshape(1, 256)(merged)
+    x = Reshape((1, 256))(merged)
     x = SimpleRNN(256, activation='linear')(x)
 
     throttle_out = Dense(1, name="throttle_out")(x)
