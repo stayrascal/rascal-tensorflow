@@ -17,7 +17,7 @@ n_output_layer = 10   # 输出层
 X = tf.placeholder('float', [None, chunk_n, chunk_size])
 Y = tf.placeholder('float')
 
-# 定义待训练的神经网络
+# 定义待训练的神经网络`
 def recurrent_neural_network(data):
     layer = {
         'w_': tf.Variable(tf.random_normal([rnn_size, n_output_layer])), 
