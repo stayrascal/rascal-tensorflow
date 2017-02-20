@@ -56,7 +56,7 @@ def variable_summaries(var):
         tf.summary.histogram('histogram', var)
 
 
-def nn_layer(input_tensor, input_dim, output_dim, layer_name, act=tf.nn.relu, dropout=False):
+def nn_layer(input_tensor, input_dim, output_dim, layer_name, act=tf.nn.relu):
     # Adding a name scope ensures logical grouping of the layers in the graph.
     with tf.name_scope(layer_name):
         # This Variable will hold the state of the weights for the layer
@@ -93,7 +93,7 @@ def main(learning_rate=0.05, max_steps=3001, batch_size=128):
     sess = tf.InteractiveSession()
 
     x, y_ = define_input(28, 10)
-    hidden1 = nn_layer(x, 784, 1024, 'layer1', dropout=True)
+    hidden1 = nn_layer(x, 784, 1024, 'layer1')
 
     # with tf.name_scope('dropout'):
     #     keep_prob = tf.placeholder(tf.float32)
