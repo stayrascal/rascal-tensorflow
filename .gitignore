@@ -8,3 +8,10 @@ __pycache__/
 *.pb
 *.txt
 tags
+*.tfmodel
+*.tar.gz
+*/logs/
+*.ipynb_checkpoints/
+notmnist/notMNIST_large
+notmnist/notMNIST_small
+notmnist/summary
