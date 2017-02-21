@@ -32,19 +32,16 @@ test_dataset, test_labels = reformat(test_dataset, test_labels)
 
 
 def weight_variable(shape):
-    """Create a weight variable with appropriate initialization."""
     initial = tf.truncated_normal(shape, stddev=0.1)
     return tf.Variable(initial)
 
 
 def bias_variable(shape):
-    """Create a bias variable with appropriate initialization."""
     initial = tf.constant(0.1, shape=shape)
     return tf.Variable(initial)
 
 
 def variable_summaries(var):
-    """Attach a lot of summaries to a Tensor (for TensorBoard visualization)."""
     with tf.name_scope('summaries'):
         mean = tf.reduce_mean(var)
         tf.summary.scalar('mean', mean)
@@ -57,9 +54,7 @@ def variable_summaries(var):
 
 
 def nn_layer(input_tensor, input_dim, output_dim, layer_name, act=tf.nn.relu):
-    # Adding a name scope ensures logical grouping of the layers in the graph.
     with tf.name_scope(layer_name):
-        # This Variable will hold the state of the weights for the layer
         with tf.name_scope('weights'):
             weights = weight_variable([input_dim, output_dim])
             variable_summaries(weights)
@@ -95,17 +90,15 @@ def main(learning_rate=0.05, max_steps=3001, batch_size=128):
     x, y_ = define_input(28, 10)
     hidden1 = nn_layer(x, 784, 1024, 'layer1')
 
-    # with tf.name_scope('dropout'):
-    #     keep_prob = tf.placeholder(tf.float32)
-    #     tf.summary.scalar('dropout_keep_probability', keep_prob)
-    #     droped = tf.nn.dropout(hidden1, keep_prob)
+    with tf.name_scope('dropout'):
+        keep_prob = tf.placeholder(tf.float32)
+        tf.summary.scalar('dropout_keep_probability', keep_prob)
+        droped = tf.nn.dropout(hidden1, keep_prob)
 
     y = nn_layer(hidden1, 1024, 10, 'layer2', act=tf.identity)
 
     with tf.name_scope('cross_entropy'):
-        diff = tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y)
-        with tf.name_scope('total'):
-            cross_entropy = tf.reduce_mean(diff)
+        cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y))
     tf.summary.scalar('cross_entropy', cross_entropy)
 
     with tf.name_scope('train'):
@@ -114,7 +107,6 @@ def main(learning_rate=0.05, max_steps=3001, batch_size=128):
 
     with tf.name_scope('accuracy'):
         with tf.name_scope('correct_prediction'):
-            y = tf.nn.softmax(y)
             correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
         with tf.name_scope('accuracy'):
             accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
@@ -129,7 +121,7 @@ def main(learning_rate=0.05, max_steps=3001, batch_size=128):
         offset = (step * batch_size) % (train_labels.shape[0] - batch_size)
         batch_data = train_dataset[offset:(offset + batch_size)]
         batch_labels = train_labels[offset:(offset + batch_size)]
-        feed_dict = {x: batch_data, y_: batch_labels}
+        feed_dict = {x: batch_data, y_: batch_labels, keep_prob:0.99}
 
         if step % 500 == 99:
             run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
@@ -149,13 +141,13 @@ def main(learning_rate=0.05, max_steps=3001, batch_size=128):
 
         if (step % 500 == 0):
             summary, acc = sess.run(
-                [merged, accuracy], feed_dict={x: valid_dataset, y_: valid_labels})
+                [merged, accuracy], feed_dict={x: valid_dataset, y_: valid_labels, keep_prob:1})
 
             train_writer.add_summary(summary, step)
             print('Accuracy at step %s: %s' % (step, acc))
 
     summary, acc = sess.run(
-        [merged, accuracy], feed_dict={x: test_dataset, y_: test_labels})
+        [merged, accuracy], feed_dict={x: test_dataset, y_: test_labels, keep_prob:1})
 
     train_writer.add_summary(summary, step + 1)
     print('Total Accuracy at step %s: %s' % (step + 1, acc))
