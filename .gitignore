@@ -2,3 +2,7 @@
 .idea/*
 *.gz
 __pycache__/
+*.pickle
+*/board/
+.ipynb_checkpoints/
+summary/
